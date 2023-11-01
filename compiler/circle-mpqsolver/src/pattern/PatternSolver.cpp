@@ -37,10 +37,7 @@ PatternSolver::PatternSolver(const std::string &input_quantization,
 std::unique_ptr<luci::Module> PatternSolver::run(const std::string &module_path)
 {
   auto module = read_module(module_path);
-  if (!module)
-  {
-    throw std::runtime_error("Failed to load model");
-  }
+  assert(module != nullptr);
 
   resolve_patterns(module.get());
 
@@ -78,6 +75,9 @@ void PatternSolver::resolve_patterns(luci::Module *module)
     {
       case QuantizationPattern::Q8LayerNormWithQ16Variance:
         resolver = std::make_unique<pattern::Q8LayerNormWithQ16VarianceResolver>();
+        break;
+      case QuantizationPattern::Q8SoftmaxWithQ16SubExp:
+        resolver = std::make_unique<pattern::Q8SoftmaxWithQ16SubExpResolver>();
         break;
       default:
         throw std::runtime_error("Unsupported pattern to resolve");

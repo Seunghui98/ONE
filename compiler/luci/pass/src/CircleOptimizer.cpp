@@ -17,6 +17,7 @@
 #include "luci/CircleOptimizer.h"
 
 #include "luci/Pass/ConvertNCHWToNHWCPass.h"
+#include "luci/Pass/CommonSubExpressionEliminationPass.h"
 #include "luci/Pass/ExpandBroadcastConstPass.h"
 #include "luci/Pass/FoldAddV2Pass.h"
 #include "luci/Pass/FoldCastPass.h"
@@ -40,6 +41,8 @@
 #include "luci/Pass/FusePreActivationBatchNormPass.h"
 #include "luci/Pass/FusePReluPass.h"
 #include "luci/Pass/FuseGeluPass.h"
+#include "luci/Pass/FuseSliceWithTConvPass.h"
+#include "luci/Pass/FuseHorizontalFullyConnectedPass.h"
 #include "luci/Pass/FuseTransposeWithMeanPass.h"
 #include "luci/Pass/MakeBatchNormGammaPositivePass.h"
 #include "luci/Pass/RemoveDuplicateConstPass.h"
@@ -48,6 +51,7 @@
 #include "luci/Pass/RemoveRedundantReshapePass.h"
 #include "luci/Pass/RemoveRedundantTransposePass.h"
 #include "luci/Pass/RemoveRedundantQuantizePass.h"
+#include "luci/Pass/RemoveUnnecessaryAddPass.h"
 #include "luci/Pass/RemoveUnnecessaryReshapePass.h"
 #include "luci/Pass/RemoveUnnecessaryReshapeNetPass.h"
 #include "luci/Pass/RemoveUnnecessarySlicePass.h"
@@ -240,6 +244,10 @@ void CircleOptimizer::optimize(loco::Graph *g) const
   phase.emplace_back(std::make_unique<luci::CircleShapeInferencePass>());
   phase.emplace_back(std::make_unique<luci::CircleTypeInferencePass>());
 
+  if (_options->query(Options::Algorithm::CommonSubExpressionElimination))
+  {
+    phase.emplace_back(std::make_unique<luci::CommonSubExpressionEliminationPass>());
+  }
   if (_options->query(Options::Algorithm::ResolveCustomOpAdd))
   {
     phase.emplace_back(std::make_unique<luci::ResolveCustomOpAddPass>());
@@ -280,6 +288,10 @@ void CircleOptimizer::optimize(loco::Graph *g) const
   {
     phase.emplace_back(std::make_unique<FuseBatchNormWithTConvPass>());
   }
+  if (_options->query(Options::Algorithm::FuseSliceWithTConv))
+  {
+    phase.emplace_back(std::make_unique<FuseSliceWithTConvPass>());
+  }
   if (_options->query(Options::Algorithm::FuseAddWithFullyConnected))
   {
     phase.emplace_back(std::make_unique<FuseAddWithFullyConnectedPass>());
@@ -299,6 +311,10 @@ void CircleOptimizer::optimize(loco::Graph *g) const
   if (_options->query(Options::Algorithm::FuseGelu))
   {
     phase.emplace_back(std::make_unique<FuseGeluPass>());
+  }
+  if (_options->query(Options::Algorithm::FuseHorizontalFullyConnected))
+  {
+    phase.emplace_back(std::make_unique<FuseHorizontalFullyConnectedPass>());
   }
   if (_options->query(Options::Algorithm::FuseTransposeWithMean))
   {
@@ -363,6 +379,10 @@ void CircleOptimizer::optimize(loco::Graph *g) const
   if (_options->query(Options::Algorithm::RemoveQuantDequantSeq))
   {
     phase.emplace_back(std::make_unique<luci::RemoveQuantDequantSeqPass>());
+  }
+  if (_options->query(Options::Algorithm::RemoveUnnecessaryAdd))
+  {
+    phase.emplace_back(std::make_unique<luci::RemoveUnnecessaryAddPass>());
   }
   if (_options->query(Options::Algorithm::RemoveUnnecessaryReshape))
   {

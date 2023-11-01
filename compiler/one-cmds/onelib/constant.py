@@ -43,12 +43,14 @@ class CONSTANT:
         'fuse_gelu',
         'fuse_mean_with_mean',
         'fuse_transpose_with_mean',
+        'fuse_slice_with_tconv',
         'transform_min_max_to_relu6',
         'transform_min_relu_to_relu6',
 
         # Remove redundant operators
         'remove_redundant_reshape',
         'remove_redundant_transpose',
+        'remove_unnecessary_add',
         'remove_unnecessary_reshape',
         'remove_unnecessary_slice',
         'remove_unnecessary_strided_slice',
@@ -98,12 +100,15 @@ class CONSTANT:
         ('fuse_batchnorm_with_conv', 'fuse BatchNorm op to Convolution op'),
         ('fuse_batchnorm_with_dwconv', 'fuse BatchNorm op to Depthwise Convolution op'),
         ('fuse_batchnorm_with_tconv', 'fuse BatchNorm op to Transposed Convolution op'),
+        ('fuse_slice_with_tconv', 'fuse Slice op to Transposed Convolution op'),
         ('fuse_bcq', 'apply Binary Coded Quantization'),
         ('fuse_preactivation_batchnorm',
          'fuse BatchNorm operators of pre-activations to Convolution op'),
         ('fuse_mean_with_mean', 'fuse two consecutive Mean ops'),
         ('fuse_transpose_with_mean',
          'fuse Mean with a preceding Transpose under certain conditions'),
+        ('fuse_horizontal_fc_layers',
+         'fuse horizontal FullyConnected layers under certain conditions'),
         ('make_batchnorm_gamma_positive',
          'make negative gamma of BatchNorm to a small positive value (1e-10).'
          ' Note that this pass can change the execution result of the model.'
@@ -119,6 +124,7 @@ class CONSTANT:
         ('remove_redundant_quantize', 'remove redundant Quantize ops'),
         ('remove_redundant_reshape', 'fuse or remove subsequent Reshape ops'),
         ('remove_redundant_transpose', 'fuse or remove subsequent Transpose ops'),
+        ('remove_unnecessary_add', 'remove unnecessary add ops'),
         ('remove_unnecessary_reshape', 'remove unnecessary reshape ops'),
         ('remove_unnecessary_slice', 'remove unnecessary slice ops'),
         ('remove_unnecessary_strided_slice', 'remove unnecessary strided slice ops'),

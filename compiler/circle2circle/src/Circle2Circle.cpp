@@ -88,6 +88,8 @@ int entry(int argc, char **argv)
              "This will move Transpose Op forward if possible (for further optimization)");
   add_switch(arser, "--fuse_activation_function",
              "This will fuse Activation function to a preceding operator");
+  add_switch(arser, "--fuse_horizontal_fc_layers",
+             "This will fuse horizontal FullyConnected layers");
   add_switch(arser, "--fuse_add_with_fully_connected",
              "This will fuse Add operator to FullyConnected operator");
   add_switch(arser, "--fuse_add_with_tconv",
@@ -103,6 +105,8 @@ int entry(int argc, char **argv)
   add_switch(arser, "--fuse_mean_with_mean",
              "This will fuse two Mean operations when they follow one by one. This will fold them "
              "into one operation and merge reduction indices.");
+  add_switch(arser, "--fuse_slice_with_tconv",
+             "This will fuse Slice operation with a preceding TConv if possible.");
   add_switch(arser, "--fuse_transpose_with_mean",
              "This will fuse Mean operation with a preceding Transpose under certain conditions.");
   add_switch(arser, "--make_batchnorm_gamma_positive",
@@ -121,6 +125,8 @@ int entry(int argc, char **argv)
              "This will fuse or remove subsequent Reshape operators");
   add_switch(arser, "--remove_redundant_transpose",
              "This will fuse or remove subsequent Transpose operators");
+  add_switch(arser, "--remove_unnecessary_add",
+             "This will remove unnecessary add of zero constant");
   add_switch(arser, "--remove_unnecessary_reshape",
              "This will remove unnecessary reshape operators");
   add_switch(arser, "--remove_unnecessary_slice", "This will remove unnecessary slice operators");
@@ -255,6 +261,8 @@ int entry(int argc, char **argv)
     options->enable(Algorithms::ForwardTransposeOp);
   if (arser.get<bool>("--fuse_activation_function"))
     options->enable(Algorithms::FuseActivationFunction);
+  if (arser.get<bool>("--fuse_horizontal_fc_layers"))
+    options->enable(Algorithms::FuseHorizontalFullyConnected);
   if (arser.get<bool>("--fuse_batchnorm_with_conv"))
     options->enable(Algorithms::FuseBatchNormWithConv);
   if (arser.get<bool>("--fuse_add_with_fully_connected"))
@@ -265,6 +273,8 @@ int entry(int argc, char **argv)
     options->enable(Algorithms::FuseBatchNormWithDwConv);
   if (arser.get<bool>("--fuse_batchnorm_with_tconv"))
     options->enable(Algorithms::FuseBatchNormWithTConv);
+  if (arser.get<bool>("--fuse_slice_with_tconv"))
+    options->enable(Algorithms::FuseSliceWithTConv);
   if (arser.get<bool>("--fuse_bcq"))
     options->enable(Algorithms::FuseBCQ);
   if (arser.get<bool>("--fuse_instnorm"))
@@ -293,6 +303,8 @@ int entry(int argc, char **argv)
     options->enable(Algorithms::RemoveRedundantReshape);
   if (arser.get<bool>("--remove_redundant_transpose"))
     options->enable(Algorithms::RemoveRedundantTranspose);
+  if (arser.get<bool>("--remove_unnecessary_add"))
+    options->enable(Algorithms::RemoveUnnecessaryAdd);
   if (arser.get<bool>("--remove_unnecessary_reshape"))
     options->enable(Algorithms::RemoveUnnecessaryReshape);
   if (arser.get<bool>("--remove_unnecessary_slice"))
