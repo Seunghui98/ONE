@@ -88,6 +88,8 @@ int entry(int argc, char **argv)
              "This will move Transpose Op forward if possible (for further optimization)");
   add_switch(arser, "--fuse_activation_function",
              "This will fuse Activation function to a preceding operator");
+  add_switch(arser, "--fuse_horizontal_fc_layers",
+             "This will fuse horizontal FullyConnected layers");
   add_switch(arser, "--fuse_add_with_fully_connected",
              "This will fuse Add operator to FullyConnected operator");
   add_switch(arser, "--fuse_add_with_tconv",
@@ -179,6 +181,8 @@ int entry(int argc, char **argv)
              "Decompose HardSwish operator to Add, Mul and Relu6 operators");
   add_switch(arser, "--decompose_softmax",
              "Decompose Softmax operator into multiple operators for special backends");
+  add_switch(arser, "--common_subexpression_elimination",
+             "Perform common subexpression elimination");
   add_switch(arser, "--mute_warnings", "This will turn off warning messages");
   add_switch(arser, "--disable_validation",
              "This will turn off operator validations. May help input model investigation.");
@@ -259,6 +263,8 @@ int entry(int argc, char **argv)
     options->enable(Algorithms::ForwardTransposeOp);
   if (arser.get<bool>("--fuse_activation_function"))
     options->enable(Algorithms::FuseActivationFunction);
+  if (arser.get<bool>("--fuse_horizontal_fc_layers"))
+    options->enable(Algorithms::FuseHorizontalFullyConnected);
   if (arser.get<bool>("--fuse_batchnorm_with_conv"))
     options->enable(Algorithms::FuseBatchNormWithConv);
   if (arser.get<bool>("--fuse_add_with_fully_connected"))
@@ -345,6 +351,8 @@ int entry(int argc, char **argv)
     options->enable(Algorithms::TransformMinMaxToRelu6Pass);
   if (arser.get<bool>("--transform_min_relu_to_relu6"))
     options->enable(Algorithms::TransformMinReluToRelu6Pass);
+  if (arser.get<bool>("--common_subexpression_elimination"))
+    options->enable(Algorithms::CommonSubExpressionElimination);
   if (arser.get<bool>("--decompose_hardswish"))
     options->enable(Algorithms::DecomposeHardSwishPass);
   if (arser.get<bool>("--decompose_softmax"))

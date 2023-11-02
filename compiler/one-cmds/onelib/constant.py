@@ -44,6 +44,7 @@ class CONSTANT:
         'fuse_mean_with_mean',
         'fuse_transpose_with_mean',
         'fuse_slice_with_tconv',
+        'fuse_horizontal_fc_layers'
         'transform_min_max_to_relu6',
         'transform_min_relu_to_relu6',
 
@@ -55,6 +56,7 @@ class CONSTANT:
         'remove_unnecessary_slice',
         'remove_unnecessary_strided_slice',
         'remove_unnecessary_split',
+        'common_subexpression_elimination',
 
         # Canonicalization
         # (passes to help further optimization)
@@ -80,6 +82,7 @@ class CONSTANT:
         ('convert_nchw_to_nhwc',
          'Experimental: This will convert NCHW operators to NHWC under the assumption that input model is NCHW.'
          ),
+        ('common_subexpression_elimination', 'perform common subexpression elimination'),
         ('expand_broadcast_const', 'expand broadcastable constant node inputs'),
         ('nchw_to_nhwc_input_shape',
          'convert the input shape of the model (argument for convert_nchw_to_nhwc)'),
@@ -107,6 +110,8 @@ class CONSTANT:
         ('fuse_mean_with_mean', 'fuse two consecutive Mean ops'),
         ('fuse_transpose_with_mean',
          'fuse Mean with a preceding Transpose under certain conditions'),
+        ('fuse_horizontal_fc_layers',
+         'fuse horizontal FullyConnected layers under certain conditions'),
         ('make_batchnorm_gamma_positive',
          'make negative gamma of BatchNorm to a small positive value (1e-10).'
          ' Note that this pass can change the execution result of the model.'

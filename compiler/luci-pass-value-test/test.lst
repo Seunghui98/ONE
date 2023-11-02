@@ -21,6 +21,7 @@ addeval(Net_Dequantize_Add_000 fold_dequantize)
 addeval(Net_DwConv_BN_000 fuse_batchnorm_with_dwconv)
 addeval(Net_DwConv_BN_001 fuse_batchnorm_with_dwconv)
 addeval(Net_FullyConnected_Add_000 fold_fully_connected)
+addeval(Net_Horizontal_FullyConnected_Add_000 fuse_horizontal_fc_layers)
 addeval(Net_Reshape_Neg_000 forward_reshape_to_unaryop)
 addeval(Net_Mul_Add_000 remove_unnecessary_add)
 addeval(Net_Mul_Add_001 remove_unnecessary_add)
@@ -60,3 +61,6 @@ addeval(Net_Densify_Dequantize_Add_000 fold_dequantize fold_densify)
 # test SignatureDef, with any optimization
 #addeval(SignatureDef_MultiOut_000 fuse_instnorm)
 #addeval(SignatureDef_MultiOut_001 fuse_instnorm)
+
+# test for common subexpression elimination
+addeval(CSE_Quantize_000 common_subexpression_elimination)
