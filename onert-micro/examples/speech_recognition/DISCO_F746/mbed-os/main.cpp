@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-#include "OpUtils.h"
+#include <luci_interpreter/Interpreter.h>
+#include "mbed.h"
 
-#include <stdexcept>
-
-void check_custom_op_value(const tflchef::Operation operation, std::string op_type)
+int main()
 {
-  if (operation.type() == "Custom" || (operation.has_extype() && operation.extype() == "Custom"))
+  while (true)
   {
-    assert(operation.custom_code() == op_type);
+    ThisThread::sleep_for(100ms);
   }
 }
